@@ -38,7 +38,7 @@ def create_voting_dict(strlist):
     The lists for each senator should preserve the order listed in voting data.
     In case you're feeling clever, this can be done in one line.
     """
-    pass
+    return return { s.split()[0]:[int(s.split()[i]) for i in range(3, len(s.split()))] for s in strlist}
 
 
 
@@ -60,7 +60,7 @@ def policy_compare(sen_a, sen_b, voting_dict):
         
     You should definitely try to write this in one line.
     """
-    pass
+    return sum([x * y for (x,y) in zip(voting_dict[sen_a], voting_dict[sen_b])])
 
 
 
@@ -85,11 +85,18 @@ def most_similar(sen, voting_dict):
     Note that you can (and are encouraged to) re-use your policy_compare procedure.
     """
     
-    return ""
+    res = ['', 0]
+    for i in voting_dict.keys():
+        j = policy_compare(sen, i, voting_dict)
+        if i != sen and res[1] < j:
+            res[0] = i
+            res[1] = j
+    return res[0]
 
 
 
 ## 4: (Task 2.12.4) Least Similar
+from sys import maxsize
 def least_similar(sen, voting_dict):
     """
     Input: the last name of a senator, and a dictionary mapping senator names
@@ -106,13 +113,19 @@ def least_similar(sen, voting_dict):
         >>> least_similar('c', vd)
         'b'
     """
-    pass
+    res = ['', maxsize]
+    for i in voting_dict.keys():
+        j = policy_compare(sen, i, voting_dict)
+        if i != sen and res[1] > j:
+            res[0] = i
+            res[1] = j
+    return res[0]
 
 
 
 ## 5: (Task 2.12.5) Chafee, Santorum
-most_like_chafee    = ''
-least_like_santorum = '' 
+most_like_chafee    = 'Jeffords'
+least_like_santorum = 'Feingold' 
 
 
 
@@ -131,10 +144,22 @@ def find_average_similarity(sen, sen_set, voting_dict):
         >>> vd == {'Klein':[1,1,1], 'Fox-Epstein':[1,-1,0], 'Ravella':[-1,0,0], 'Oyakawa':[-1,-1,-1], 'Loery':[0,1,1]}
         True
     """
-    return ...
+    return sum([policy_compare(sen, k, voting_dict) for k in sen_set])/len(sen_set)
 
-most_average_Democrat = ... # give the last name (or code that computes the last name)
-
+most_average_Democrat = 'Wyden'
+"""
+ sen_set = [s.split()[0] for s in mylist if s.split()[1] == 'D']
+ 
+ def most_average_democrat(sen_set, voting_dict):
+	x = 0
+	y = ''
+	for s in sen_set:
+		z = find_average_similarity(s, sen_set, voting_dict)
+		if x <= z:
+			x = z
+			y = s
+	return s
+"""
 
 
 ## 7: (Task 2.12.8) Average Record
@@ -160,11 +185,12 @@ def find_average_record(sen_set, voting_dict):
         >>> find_average_record({'a'}, d)
         [0.0, 1.0, 1.0]
     """
-    return ...
+    records = [ 0 for x in range(len(list(voting_dict.values())[0]))]
+    for sen in sen_set:
+        records = [ sum(x) for x in zip(voting_dict[sen], records)]
+    return [ x / len(sen_set) for x in records ]
 
-average_Democrat_record = ... # give the vector as a list
-
-
+    average_Democrat_record = [-0.16279069767441862, -0.23255813953488372, 1.0, 0.8372093023255814, 0.9767441860465116, -0.13953488372093023, -0.9534883720930233, 0.813953488372093, 0.9767441860465116, 0.9767441860465116, 0.9069767441860465, 0.7674418604651163, 0.6744186046511628, 0.9767441860465116, -0.5116279069767442, 0.9302325581395349, 0.9534883720930233, 0.9767441860465116, -0.3953488372093023, 0.9767441860465116, 1.0, 1.0, 1.0, 0.9534883720930233, -0.4883720930232558, 1.0, -0.32558139534883723, -0.06976744186046512, 0.9767441860465116, 0.8604651162790697, 0.9767441860465116, 0.9767441860465116, 1.0, 1.0, 0.9767441860465116, -0.3488372093023256, 0.9767441860465116, -0.4883720930232558, 0.23255813953488372, 0.8837209302325582, 0.4418604651162791, 0.9069767441860465, -0.9069767441860465, 1.0, 0.9069767441860465, -0.3023255813953488]
 
 ## 8: (Task 2.12.9) Bitter Rivals
 def bitter_rivals(voting_dict):
@@ -179,5 +205,14 @@ def bitter_rivals(voting_dict):
         >>> br == ('Fox-Epstein', 'Oyakawa') or br == ('Oyakawa', 'Fox-Epstein')
         True
     """
-    return (..., ...)
-
+    x = maxsize
+    y = ''
+    z = ''
+    for i in voting_dict.keys():
+        for j in voting_dict.keys():
+            k = policy_compare(i, j, voting_dict)
+            if i != j and x > k:
+                x = k
+                y = i
+                z = j
+    return (y, z)
