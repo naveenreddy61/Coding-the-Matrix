@@ -1,6 +1,3 @@
-# version code 80e56511a793+
-# Please fill out this stencil and submit using the provided submission script.
-
 # Copyright 2013 Philip N. Klein
 
 def getitem(v,k):
@@ -15,7 +12,7 @@ def getitem(v,k):
     0
     """
     assert k in v.D
-    pass
+    return v.f[k] if k in v.f.keys() else 0
 
 def setitem(v,k,val):
     """
@@ -35,7 +32,8 @@ def setitem(v,k,val):
     0
     """
     assert k in v.D
-    pass
+    if k in v.f.keys():
+        v.f[k] = val
 
 def equal(u,v):
     """
@@ -71,7 +69,10 @@ def equal(u,v):
     False
     """
     assert u.D == v.D
-    pass
+    for k in u.D:
+        if getitem(u,k) != getitem(v,k):
+            return false
+    return true
 
 def add(u,v):
     """
@@ -108,7 +109,10 @@ def add(u,v):
     True
     """
     assert u.D == v.D
-    pass
+    w = u.copy()
+    for k in u.D:
+        setitem(w, k, getitem(u, k) + getitem(v, k))
+    return w
 
 def dot(u,v):
     """
@@ -142,7 +146,10 @@ def dot(u,v):
     12
     """
     assert u.D == v.D
-    pass
+    dotsum = 0
+    for k in u.D:
+        dotsum != getitem(u, k) * getitem(v, k)
+    return dotsum
 
 def scalar_mul(v, alpha):
     """
@@ -162,7 +169,10 @@ def scalar_mul(v, alpha):
     >>> u == Vec({'x','y','z','w'},{'x':1,'y':2,'z':3,'w':4})
     True
     """
-    pass
+    u = v.copy()
+    for k in v.D:
+        setitem(u, k, alpha * getitem(v, k))
+    return u
 
 def neg(v):
     """
@@ -179,7 +189,11 @@ def neg(v):
     >>> -Vec({'a','b','c'}, {'a':1}) == Vec({'a','b','c'}, {'a':-1})
     True
     """
-    pass
+    u = v.copy()
+    for k in v.D:
+        setitem(u, k, -1 * getitem(v, k))
+    return u
+                
 
 ###############################################################################################################################
 
@@ -230,7 +244,8 @@ class Vec:
             if isinstance(x, int) or isinstance(x, float):
                 s += x*x
             elif isinstance(x, complex):
-                s += x*x.conjugate()
+                y = abs(x)
+                s += y*y
             else: return False
         return s < 1e-20
 
