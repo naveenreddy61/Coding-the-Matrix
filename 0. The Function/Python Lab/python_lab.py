@@ -179,6 +179,11 @@ digits = set(range(base))
 # are assigned different values (e.g. base = 2 and digits = {0,1})
 representation_dict = { x:[ x // base ** 2, (x // base) % base , x % base] for x in range(base ** 3) }
 
+base=2
+digits=set(range(base))
+digits_dic = {i:i for i in digits}
+numbers = {i:list(digits_dic[(i//base**k)%base] for k in reversed(range(10))) for i in range(1024)}
+
 
 
 ## 25: (Task 0.5.26) A dictionary mapping names to salaries
@@ -209,6 +214,8 @@ def cubes(L): return [ x ** 3 for x in L ]
 def dict2list(dct, keylist): return [ dct[keylist[x]] for x in range(len(keylist)) ]
 
 
+def dict2list(dct,keylist): return [dct[keylist[i]] for i in range(len(keylist))]
+
 
 ## 29: (Task 0.5.31) Procedure list2dict
 # Input: a list L and a list keylist of the same length
@@ -217,9 +224,10 @@ def dict2list(dct, keylist): return [ dct[keylist[x]] for x in range(len(keylist
 # Complete the procedure definition by replacing { ... } with a one-line dictionary comprehension
 def list2dict(L, keylist): return { keylist[i]:L[i] for i in range(len(L)) }
 
-
+def list2dict(L,keylist): return list(zip(L,keylist,L))
 
 ## 30: (Task 0.5.32) Generating all three-digit numbers over a given base
 # Complete the procedure definition by replacing { ... } with a one-line set comprehension
 def all_3_digit_numbers(base, digits): return { a * base ** 2 + b * base + c for a in digits for b in digits for c in digits }
 
+def all_3_digit_numbers(base,digits): return {x*base*base+y*base+z for x in digits for y in digits for z in digits}
